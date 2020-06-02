@@ -4,15 +4,15 @@ sys.path.insert(0, '..') #Importando archivos donde se encuentran los modulos
 
 from main_nodo import nodo
 
-node = nodo("142.44.246.92", 8001)#prueba
+node_1 = nodo("142.44.246.92", 8001)
 
 time.sleep(1)
 
-node.start()
+node_1.start()
 
 time.sleep(2)
 
-node.connect_with_node('142.44.246.23', 8002)
+node_1.connect_with_node('142.44.246.23', 8002)
 
 time.sleep(1)
 
@@ -20,7 +20,7 @@ while True:
     try: 
         print("\n_____________BIENVENIDO___________\n"
         +"\n Ingrese el numero de la acción que desea realizar:"
-        +"\n1. Agregar numero \n2.Sumar numero \n3. Salir")
+        +"\n1. Agregar numero \n2. Sumar numero \n3. Salir")
         
         op = int(input(" \n : "))
 
@@ -30,7 +30,7 @@ while True:
             archivo.write("{},0".format(num))
             archivo.close() 
             print("Numero guardado")
-            node.send_to_nodes(num)
+            node_1.send_to_nodes(num)
         elif op == 2:
             numbers = []
             with open("numeros.txt", "r") as file:
@@ -42,10 +42,9 @@ while True:
                 suma = sum(numbers)
             print("\nLa suma es: "+str(suma))
         elif op == 3:
-            node.stop()
+            node_1.stop()
             print('end')
             break
     except ValueError:
         print("Porfavor, ingresa solo numeros")
     
-
