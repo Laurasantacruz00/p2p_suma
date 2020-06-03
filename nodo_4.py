@@ -4,7 +4,7 @@ sys.path.insert(0, '..') # Import the files where the modules are located
 
 from main_nodo import nodo
 
-node_4 = nodo("127.0.0.1", 8004)
+node_4 = nodo("142.44.246.12", 8004)
 
 time.sleep(1)
 
@@ -12,7 +12,7 @@ node_4.start()
 
 time.sleep(1)
 
-node_4.connect_with_node('127.0.0.1', 8001)
+node_4.connect_with_node('142.44.246.92', 8001)
 
 time.sleep(1)
 
