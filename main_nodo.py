@@ -1,11 +1,13 @@
 from p2pnetwork.node import Node
 
 class nodo(Node):
-    archivo = open("numeros.txt","w")#Creando txt para los numeros a guardar 
+    archivo = open("numeros_1.txt","w")#Creando txt para los numeros a guardar
+    archivo.close()
+    archivo = open("numeros.txt","w")#Creando txt para los numeros a guardar
     archivo.close()
     #Constructor
     def __init__(self, host, port):
-        super(nodo, self).__init__(host, port, None)#Creando nodo 
+        super(nodo, self).__init__(host, port, None)#Creando nodo
         print("Nodo: Iniciado")
 
     def outbound_node_connected(self, node):
@@ -21,13 +23,39 @@ class nodo(Node):
         print("Nodo saliente desconectado: " + node.id)
 
     def node_message(self, node, data):#Mensajes provenientes de los otros nodos
-        archivo = open("numeros.txt","a")#Guardando numeros de nodos conectados
-        archivo.write("{},0".format(str(data)))
-        archivo.close() 
-        #print("Numero guardado")
-    
+        if str(data) == "true":
+            with open("numeros_1.txt", "r") as file:
+                for line in file:
+                    #fields = line.split(",")
+                    data = line.rstrip("n")
+                    #print(data)
+            self.send_to_node(node, data)
+        else:
+            #print(str(data))
+            num = data
+            archivo = open("numeros.txt","a")#Creando txt con la información del cliente
+            archivo.write("{},0".format(num))
+            archivo.close() 
+            numbers = []
+            with open("numeros_1.txt", "r") as file:
+                for line in file:
+                    fields = line.split(",")
+                    #print(line.rstrip("n"))
+                subnumbers = (int(field) for field in fields)
+                numbers.extend(subnumbers)
+            with open("numeros.txt", "r") as file:
+                for line in file:
+                    fields = line.split(",")
+                    #print(line.rstrip("n"))
+                subnumbers = (int(field) for field in fields)
+                numbers.extend(subnumbers)
+                suma = sum(numbers)
+            print("\nLa suma es: "+str(suma)) 
+
+        
     def node_disconnect_with_outbound_node(self, node):
         print("El nodo desea desconectarse de otro nodo saliente:" + node.id)
-    
+        
     def node_request_to_stop(self):#Detener el nodo
         print("Deteniendo nodo...")
+        
