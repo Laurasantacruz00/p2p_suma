@@ -4,7 +4,7 @@ sys.path.insert(0, '..') # Import the files where the modules are located
 
 from main_nodo import nodo
 
-node_3 = nodo("142.44.246.23", 8003)
+node_3 = nodo("158.69.63.154", 8003)
 
 time.sleep(1)
 
