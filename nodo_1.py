@@ -4,7 +4,7 @@ sys.path.insert(0, '..') #Importando archivos donde se encuentran los modulos
 
 from main_nodo import nodo
 
-node_1 = nodo("127.0.0.1", 8001)
+node_1 = nodo("142.44.246.92", 8001)
 
 time.sleep(1)
 
@@ -12,7 +12,7 @@ node_1.start()
 
 time.sleep(2)
 
-node_1.connect_with_node('127.0.0.1', 8002)
+node_1.connect_with_node('142.44.246.23', 8002)
 
 time.sleep(1)
 
