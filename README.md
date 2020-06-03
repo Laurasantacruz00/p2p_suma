@@ -24,42 +24,70 @@ Con esto claro se realizan dos codigos uno que funcionara para realizar los even
 
     from p2pnetwork.node import Node
 
-    class nodo(Node):
-      archivo = open("numeros.txt","w")#Creando txt para los numeros a guardar
-      archivo.close()
-
-      #Constructor
-      def __init__(self, host, port):
+class nodo(Node):
+    archivo = open("numeros_1.txt","w")#Creando txt para los numeros a guardar
+    archivo.close()
+    archivo = open("numeros.txt","w")#Creando txt para los numeros a guardar
+    archivo.close()
+    #Constructor
+    def __init__(self, host, port):
         super(nodo, self).__init__(host, port, None)#Creando nodo
         print("Nodo: Iniciado")
 
-      def outbound_node_connected(self, node):
+    def outbound_node_connected(self, node):
         print("Nodo saliente conectado: " + node.id)#Nodo al que se conecto
         
-      def inbound_node_connected(self, node):
+    def inbound_node_connected(self, node):
         print("Nodo entrante conectado: " + node.id)#Nodo que se conecto a este
 
-      def inbound_node_disconnected(self, node):#Nodo al que se desconecto
+    def inbound_node_disconnected(self, node):#Nodo al que se desconecto
         print("Nodo entrante desconectado: " + node.id)
 
-      def outbound_node_disconnected(self, node):#Nodo que se desconecto a este
+    def outbound_node_disconnected(self, node):#Nodo que se desconecto a este
         print("Nodo saliente desconectado: " + node.id)
 
-      def node_message(self, node, data):#Mensajes provenientes de los otros nodos
-        archivo = open("numeros.txt","a")#Guardando numeros de nodos conectados
-        archivo.write("{},0".format(str(data)))
-        archivo.close() 
-        #print("Numero guardado")
+    def node_message(self, node, data):#Mensajes provenientes de los otros nodos
+        if str(data) == "true":
+            with open("numeros_1.txt", "r") as file:
+                for line in file:
+                    #fields = line.split(",")
+                    data = line.rstrip("n")
+                    #print(data)
+            self.send_to_node(node, data)
+        else:
+            #print(str(data))
+            num = data
+            archivo = open("numeros.txt","a")#Creando txt con la información del cliente
+            archivo.write("{},0".format(num))
+            archivo.close() 
+            numbers = []
+            with open("numeros_1.txt", "r") as file:
+                for line in file:
+                    fields = line.split(",")
+                    #print(line.rstrip("n"))
+                subnumbers = (int(field) for field in fields)
+                numbers.extend(subnumbers)
+            with open("numeros.txt", "r") as file:
+                for line in file:
+                    fields = line.split(",")
+                    #print(line.rstrip("n"))
+                subnumbers = (int(field) for field in fields)
+                numbers.extend(subnumbers)
+                suma = sum(numbers)
+            print("\nLa suma es: "+str(suma)) 
+
         
-      def node_disconnect_with_outbound_node(self, node):
+    def node_disconnect_with_outbound_node(self, node):
         print("El nodo desea desconectarse de otro nodo saliente:" + node.id)
         
-      def node_request_to_stop(self):#Detener el nodo
+    def node_request_to_stop(self):#Detener el nodo
         print("Deteniendo nodo...")
+        
+
 
 Todos los datos enviados y recibidos se enviaran en formato json generado por este mismo paquete. Cada nodo contara también con un numero de identificación generado por una función hash.
 
-# Clase principal (nodo)
+# Creación de nodos
 
 Como primera instancia se hace la importación de varios modulos los cuales permitiran la manipulación del nodo en cuestiones de inicio, tiempo de ejecución y cierre de este.
 
@@ -84,7 +112,6 @@ Luego de esto se hace la creación del objeto nodo el cual será de tipo node y 
     node.connect_with_node('142.44.246.92', 8001)#Conectando con nodo 2
 
     time.sleep(1)#Retrazando ejecución
-    
 
 # Menu para el usuario
 
@@ -129,3 +156,43 @@ Se realizo un ciclo repetitivo el cual solo se detendra cuando el usuario lo dec
 
 
 Cabe resaltar que _Todos los nodos son iguales a excepción de sus conecciones_ 
+
+# Suma de numeros 
+Para realizar la suma de todos los numero primero el usuario debe seleccionar la opcion de suma, al hacer esto se envía a los nodos conectados el dato "true"
+
+        node_2.send_to_nodes("true")
+        time.sleep(2)
+        
+Al hacer esto lo que cada nodo verificiara es si recibio este dato, para esto se utiliza una condición donde si este dato es un "true" envíe los datos guardados en este nodo
+
+    if str(data) == "true":
+            with open("numeros_1.txt", "r") as file:
+                for line in file:
+                    #fields = line.split(",")
+                    data = line.rstrip("n")
+                    #print(data)
+            self.send_to_node(node, data)
+           
+Si este dato no contiene un 3 debe obtener los numeros entonces estos se guardan en txt aparte de donde se guardan para el propio nodo
+
+    else:
+            #print(str(data))
+            num = data
+            archivo = open("numeros.txt","a")#Creando txt con la información del cliente
+            archivo.write("{},0".format(num))
+            archivo.close() 
+            numbers = []
+            with open("numeros_1.txt", "r") as file:
+                for line in file:
+                    fields = line.split(",")
+                    #print(line.rstrip("n"))
+                subnumbers = (int(field) for field in fields)
+                numbers.extend(subnumbers)
+            with open("numeros.txt", "r") as file:
+                for line in file:
+                    fields = line.split(",")
+                    #print(line.rstrip("n"))
+                subnumbers = (int(field) for field in fields)
+                numbers.extend(subnumbers)
+                suma = sum(numbers)
+            print("\nLa suma es: "+str(suma)) 
